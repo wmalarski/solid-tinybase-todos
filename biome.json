@@ -20,9 +20,6 @@
 				"useHookAtTopLevel": "error",
 				"useJsxKeyInIterable": "off"
 			},
-			"performance": {
-				"noReExportAll": "error"
-			},
 			"style": {
 				"noNegationElse": "error",
 				"useBlockStatements": "error",
