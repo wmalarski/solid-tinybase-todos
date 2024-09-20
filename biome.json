@@ -32,6 +32,9 @@
 			},
 			"nursery": {
 				"useSortedClasses": "error"
+			},
+			"complexity": {
+				"noForEach": "off"
 			}
 		}
 	},

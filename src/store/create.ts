@@ -13,7 +13,7 @@ export const createTodosStore = (initialState: Todo[]) => {
 	const store = createStore().setTablesSchema({
 		[TODOS_TABLE_ID]: {
 			createdAt: { type: "number" },
-			done: { type: "boolean" },
+			done: { type: "boolean", default: false },
 			text: { type: "string" },
 		},
 	});

@@ -3,6 +3,7 @@ import {
 	type ParentProps,
 	createContext,
 	createMemo,
+	useContext,
 } from "solid-js";
 import { type TodosStore, createTodosStore } from "./create";
 import type { Todo } from "./types";
@@ -25,4 +26,8 @@ export const TodosStoreProvider: Component<TodosStoreProviderProps> = (
 			{props.children}
 		</TodosStoreContext.Provider>
 	);
+};
+
+export const useTodosStore = () => {
+	return useContext(TodosStoreContext);
 };
