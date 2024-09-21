@@ -39,8 +39,7 @@ export const TodosList: Component = () => {
 								<TodoItemTextEditable todoId={todoId} />
 							</HStack>
 						</Card.Body>
-						<Card.Footer gap="3" width="sm">
-							<Button variant="outline">Cancel</Button>
+						<Card.Footer>
 							<DeleteTodoItemDialog todoId={todoId} />
 						</Card.Footer>
 					</Card.Root>
