@@ -1,5 +1,4 @@
-import type { Store } from "tinybase";
-import { createLocalPersister } from "tinybase/persisters/persister-browser";
+import { createLocalPersister } from "tinybase/persisters/persister-browser/with-schemas";
 import { createStore } from "tinybase/with-schemas";
 import type { Todo } from "./types";
 import { getCreatedAt } from "./utils";
@@ -20,7 +19,7 @@ export const createTodosStore = (initialState: Todo[]) => {
 		},
 	});
 
-	const persister = createLocalPersister(store as unknown as Store, "todos");
+	const persister = createLocalPersister(store, "todos");
 
 	const tables = {
 		[TODOS_TABLE_ID]: Object.fromEntries(
