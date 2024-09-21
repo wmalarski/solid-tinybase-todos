@@ -13,6 +13,10 @@ export const selectTodoDone = (rowId: string) => (store: TodosStore) => {
 	return { done: store.getCell(TODOS_TABLE_ID, rowId, "done") };
 };
 
+export const selectTodoText = (rowId: string) => (store: TodosStore) => {
+	return { text: store.getCell(TODOS_TABLE_ID, rowId, "text") };
+};
+
 export const createTodo = async (store: TodosStore, text: string) => {
 	store.addRow(TODOS_TABLE_ID, { createdAt: getCreatedAt(), text });
 };
