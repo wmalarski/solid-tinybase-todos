@@ -1,5 +1,6 @@
 import { type Component, type ComponentProps, For } from "solid-js";
 import {
+	deleteTodo,
 	selectTodoDone,
 	selectTodoText,
 	selectTodos,
@@ -11,11 +12,14 @@ import {
 	STORE_SUBSCRIPTION_NOOP,
 	createStoreSubscription,
 } from "~/store/subscription";
-import { HStack, VStack } from "~/styled-system/jsx";
+import { HStack, Stack, VStack } from "~/styled-system/jsx";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
+import { Dialog } from "../ui/dialog";
 import { Editable } from "../ui/editable";
+import { IconButton } from "../ui/icon-button";
+import { XIcon } from "../ui/icons";
 
 export const TodosList: Component = () => {
 	const todos = createStoreSubscription(() => ({
@@ -37,7 +41,7 @@ export const TodosList: Component = () => {
 						</Card.Body>
 						<Card.Footer gap="3" width="sm">
 							<Button variant="outline">Cancel</Button>
-							<Button>Invite</Button>
+							<DeleteTodoItemDialog todoId={todoId} />
 						</Card.Footer>
 					</Card.Root>
 				)}
@@ -138,5 +142,70 @@ const TodoItemTextEditable: Component<TodoItemTextEditableProps> = (props) => {
 				)}
 			</Editable.Context>
 		</Editable.Root>
+	);
+};
+
+type DeleteTodoItemDialogProps = {
+	todoId: string;
+};
+
+const DeleteTodoItemDialog: Component<DeleteTodoItemDialogProps> = (props) => {
+	const todosStore = useTodosStore();
+
+	const onClick: ComponentProps<typeof Button>["onClick"] = () => {
+		deleteTodo(todosStore(), props.todoId);
+	};
+
+	return (
+		<Dialog.Root {...props}>
+			<Dialog.Trigger
+				asChild={(triggerProps) => <Button {...triggerProps()}>Remove</Button>}
+			/>
+			<Dialog.Backdrop />
+			<Dialog.Positioner>
+				<Dialog.Content>
+					<Stack gap="8" p="6">
+						<Stack gap="1">
+							<Dialog.Title>Remove Todo</Dialog.Title>
+						</Stack>
+						<Stack gap="3" direction="row" width="full">
+							<Dialog.CloseTrigger
+								asChild={(closeTriggerProps) => (
+									<Button
+										{...closeTriggerProps()}
+										variant="outline"
+										width="full"
+									>
+										Cancel
+									</Button>
+								)}
+							/>
+							<Dialog.CloseTrigger
+								asChild={(closeTriggerProps) => (
+									<Button {...closeTriggerProps({ onClick })} width="full">
+										Confirm
+									</Button>
+								)}
+							/>
+						</Stack>
+					</Stack>
+					<Dialog.CloseTrigger
+						asChild={(closeTriggerProps) => (
+							<IconButton
+								{...closeTriggerProps()}
+								aria-label="Close Dialog"
+								variant="ghost"
+								size="sm"
+								position="absolute"
+								top="2"
+								right="2"
+							>
+								<XIcon />
+							</IconButton>
+						)}
+					/>
+				</Dialog.Content>
+			</Dialog.Positioner>
+		</Dialog.Root>
 	);
 };
