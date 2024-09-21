@@ -11,7 +11,9 @@ import {
 	STORE_SUBSCRIPTION_NOOP,
 	createStoreSubscription,
 } from "~/store/subscription";
+import { HStack, VStack } from "~/styled-system/jsx";
 import { Button } from "../ui/button";
+import { Card } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
 import { Editable } from "../ui/editable";
 
@@ -23,16 +25,24 @@ export const TodosList: Component = () => {
 	}));
 
 	return (
-		<ul>
+		<VStack gap="4" p="4">
 			<For each={todos()}>
 				{(todoId) => (
-					<li>
-						<TodoItemCheckboxes todoId={todoId} />
-						<TodoItemTextEditable todoId={todoId} />
-					</li>
+					<Card.Root width="sm">
+						<Card.Body>
+							<HStack gap="4" pt="4">
+								<TodoItemCheckboxes todoId={todoId} />
+								<TodoItemTextEditable todoId={todoId} />
+							</HStack>
+						</Card.Body>
+						<Card.Footer gap="3" width="sm">
+							<Button variant="outline">Cancel</Button>
+							<Button>Invite</Button>
+						</Card.Footer>
+					</Card.Root>
 				)}
 			</For>
-		</ul>
+		</VStack>
 	);
 };
 
@@ -59,9 +69,11 @@ const TodoItemCheckboxes: Component<TodoItemCheckboxesProps> = (props) => {
 	};
 
 	return (
-		<Checkbox checked={isDone().done} onCheckedChange={onCheckedChange}>
-			Done
-		</Checkbox>
+		<Checkbox
+			checked={isDone().done}
+			onCheckedChange={onCheckedChange}
+			aria-label="todo done"
+		/>
 	);
 };
 
@@ -95,9 +107,8 @@ const TodoItemTextEditable: Component<TodoItemTextEditableProps> = (props) => {
 			onValueCommit={onValueCommit}
 			{...props}
 		>
-			<Editable.Label>Text</Editable.Label>
 			<Editable.Area>
-				<Editable.Input />
+				<Editable.Input aria-label="Text" />
 				<Editable.Preview />
 			</Editable.Area>
 			<Editable.Context>
