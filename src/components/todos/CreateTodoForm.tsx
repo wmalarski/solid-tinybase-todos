@@ -1,6 +1,7 @@
 import type { Component, ComponentProps } from "solid-js";
 import { createTodo } from "~/store/actions";
 import { useTodosStore } from "~/store/context";
+import { css } from "~/styled-system/css";
 import { Button } from "../ui/button";
 import { Field } from "../ui/field";
 
@@ -17,7 +18,10 @@ export const CreateTodoForm: Component = () => {
 	};
 
 	return (
-		<form onSubmit={onSubmit}>
+		<form
+			onSubmit={onSubmit}
+			class={css({ display: "flex", flexDir: "column", gap: "2" })}
+		>
 			<Field.Root>
 				<Field.Label>Text</Field.Label>
 				<Field.Input type="text" name="text" placeholder="Text" />

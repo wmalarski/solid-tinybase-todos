@@ -10,9 +10,9 @@ type OnlyListeners<T> = {
 type CreateStoreSubscriptionArgs<
 	T extends object,
 	K extends keyof OnlyListeners<TodosStore>,
-> = {
+> = () => {
 	selector: (store: TodosStore) => T;
-	args: Parameters<OnlyListeners<TodosStore>[K]>;
+	params: Parameters<OnlyListeners<TodosStore>[K]>;
 	key: K;
 };
 
@@ -21,26 +21,29 @@ export const STORE_SUBSCRIPTION_NOOP = () => {};
 export const createStoreSubscription = <
 	T extends object,
 	K extends keyof OnlyListeners<TodosStore>,
->({
-	args,
-	key,
-	selector,
-}: CreateStoreSubscriptionArgs<T, K>) => {
+>(
+	args: CreateStoreSubscriptionArgs<T, K>,
+) => {
 	const todosStore = useTodosStore();
 
 	const value = createMemo(() => {
+		const { key, params, selector } = args();
+
 		const store = todosStore();
 		const initialValue = selector(store);
 		const [value, setValue] = createStore<T>(initialValue);
 
 		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		const unsafeStore = store as any;
-		const params = args.slice(0, -1);
+		const paramsWithoutListener = params.slice(0, -1);
 
-		const listenerId = unsafeStore[key](...params, (store: TodosStore) => {
-			const updatedValue = selector(store);
-			setValue(reconcile(updatedValue));
-		});
+		const listenerId = unsafeStore[key](
+			...paramsWithoutListener,
+			(store: TodosStore) => {
+				const updatedValue = selector(store);
+				setValue(reconcile(updatedValue));
+			},
+		);
 
 		onCleanup(() => {
 			store.delListener(listenerId);

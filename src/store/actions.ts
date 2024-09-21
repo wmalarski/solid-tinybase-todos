@@ -5,6 +5,10 @@ export const selectTodos = (store: TodosStore) => {
 	return store.getRowIds(TODOS_TABLE_ID);
 };
 
+export const selectTodo = (rowId: string) => (store: TodosStore) => {
+	return store.getRow(TODOS_TABLE_ID, rowId);
+};
+
 export const createTodo = async (store: TodosStore, text: string) => {
 	store.addRow(TODOS_TABLE_ID, { createdAt: getCreatedAt(), text });
 };
