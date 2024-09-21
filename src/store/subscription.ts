@@ -1,33 +1,53 @@
 import { createMemo, onCleanup } from "solid-js";
 import { createStore, reconcile } from "solid-js/store";
 import { useTodosStore } from "./context";
-import { TODOS_TABLE_ID, type TodosStore } from "./create";
+import type { TodosStore } from "./create";
 
-type CreateStoreSubscriptionArgs<T extends object> = {
-	selector: (store: TodosStore) => T;
+type OnlyListeners<T> = {
+	[K in keyof T as K extends `add${string}Listener` ? K : never]: T[K];
 };
 
-export const createStoreSubscription = <T extends object>(
-	args: CreateStoreSubscriptionArgs<T>,
-) => {
+type CreateStoreSubscriptionArgs<
+	T extends object,
+	K extends keyof OnlyListeners<TodosStore>,
+> = {
+	selector: (store: TodosStore) => T;
+	args: Parameters<OnlyListeners<TodosStore>[K]>;
+	key: K;
+};
+
+export const STORE_SUBSCRIPTION_NOOP = () => {};
+
+export const createStoreSubscription = <
+	T extends object,
+	K extends keyof OnlyListeners<TodosStore>,
+>({
+	args,
+	key,
+	selector,
+}: CreateStoreSubscriptionArgs<T, K>) => {
 	const todosStore = useTodosStore();
 
-	const todos = createMemo(() => {
+	const value = createMemo(() => {
 		const store = todosStore();
-		const initialValue = args.selector(store);
-		const [todos, setTodos] = createStore<T>(initialValue);
+		const initialValue = selector(store);
+		const [value, setValue] = createStore<T>(initialValue);
 
-		const listenerId = store.addRowIdsListener(TODOS_TABLE_ID, (store) => {
-			const updatedValue = args.selector(store);
-			setTodos(reconcile(updatedValue));
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		const unsafeStore = store as any;
+		const params = args.slice(0, -1);
+
+		const listenerId = unsafeStore[key](...params, (store: TodosStore) => {
+			const updatedValue = selector(store);
+			setValue(reconcile(updatedValue));
 		});
 
 		onCleanup(() => {
 			store.delListener(listenerId);
 		});
 
-		return todos;
+		return value;
 	});
 
-	return todos;
+	return value;
 };
