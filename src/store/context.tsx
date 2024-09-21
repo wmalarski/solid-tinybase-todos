@@ -19,7 +19,11 @@ type TodosStoreProviderProps = ParentProps<{
 export const TodosStoreProvider: Component<TodosStoreProviderProps> = (
 	props,
 ) => {
-	const store = createMemo(() => createTodosStore(props.initialTodos));
+	const store = createMemo(() => {
+		const store = createTodosStore(props.initialTodos);
+
+		return store;
+	});
 
 	return (
 		<TodosStoreContext.Provider value={() => store()}>
