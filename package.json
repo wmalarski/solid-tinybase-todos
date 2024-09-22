@@ -10,11 +10,11 @@
 		"format-and-lint:fix": "biome check . --write"
 	},
 	"dependencies": {
-		"@ark-ui/solid": "^3.12.0",
+		"@ark-ui/solid": "^3.12.1",
 		"@solidjs/start": "^1.0.6",
-		"solid-js": "^1.8.18",
+		"solid-js": "^1.8.22",
 		"tinybase": "^5.3.0",
-		"vinxi": "^0.4.1"
+		"vinxi": "^0.4.3"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.2",
